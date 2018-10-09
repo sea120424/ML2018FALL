@@ -235,13 +235,13 @@ for ele in test_x:
 #B = Regression()
 test_x = A.feature_scaling(test_x)
 y_guess = A.predict(test_x)
-
+'''
 print('[')
 for i in A.W:
 	print(',' + str(i[0]))
 
 print(']')
-'''
+
 print('----------')
 
 print(A.b)
@@ -256,13 +256,13 @@ print('-------------')
 print(list(A.max))
 '''
 
-'''
+
 k = 0
 print('id,value')
 for i in y_guess:
 	#print(i)
 	print('id_'+str(k) + ',' + str(i[0]) )
 	k += 1
-'''
+
 
 
