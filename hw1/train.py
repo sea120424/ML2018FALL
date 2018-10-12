@@ -1,183 +1,206 @@
-import sys
-import numpy  as np
 import pandas as pd
+import numpy  as np
+import scipy
+import sys
 
-W = [
-2.486041829086901
-,-1.5722169745451189
-,2.087266287584071
-,1.1077602913837408
-,1.0251980098390243
-,-2.5539049368607185
-,-2.985247976797885
-,-0.23056782490028188
-,-1.579846586510748
-,1.596960313606228
-,0.19116692187113554
-,-0.9685617526349399
-,-0.5204186802013634
-,-0.45510729116476395
-,-2.8825183378616503
-,-0.8264529132322026
-,1.356162785344643
-,5.505833534468701
-,-2.899720427094743
-,-1.479810434070298
-,-1.9186479335393611
-,-2.5553716219403615
-,-1.9296762550917268
-,5.799382385761139
-,2.7179559763206225
-,2.2001624246801743
-,5.501542146608243
-,-0.22958898142099274
-,-4.17429908658233
-,-0.9234251866368886
-,10.437951730344672
-,-2.4827862423176055
-,1.020080588981478
-,-6.265518243837125
-,-3.204273289471575
-,0.19067854364864498
-,1.8435733520434794
-,-0.16390278380776951
-,3.3687390868789224
-,-2.040214764359926
-,1.7562746743251139
-,0.6459809580579664
-,-0.8218686297800607
-,-1.2479205362619186
-,-4.26873462738387
-,1.6158523633461441
-,0.38668593239484783
-,-1.2575934410249696
-,1.504421313049866
-,-0.3632492506169593
-,-4.827362404282356
-,-2.5653651392359302
-,2.1615338544863723
-,3.6300836775838263
-,0.5826183602847421
-,-0.078046669088698
-,0.7862445429446444
-,0.6701433239872312
-,0.07083989119241393
-,-5.19076373083633
-,-1.69300115587231
-,1.2579100613443042
-,2.0863371033754965
-,-1.1653695065990655
-,-0.15637365892724012
-,0.980424351276451
-,0.08585883298142204
-,-1.4785119999788763
-,-5.1508482577566514
-,-2.708643581210123
-,1.0224764688567392
-,8.347547750756352
-,-2.0585598015327924
-,-3.7414799987832494
-,-1.9003151890624375
-,-0.26825858757249876
-,1.2942327370591857
-,-1.8679960579811392
-,-7.4304338835407036
-,2.5840205065859014
-,32.54459118418314
-,3.0885002949771247
-,3.523462763084499
-,2.3105590339596165
-,-5.735184823569785
-,9.365581515592728
-,15.26426748690855
-,-31.966362076546286
-,16.87099408848878
-,80.92453178166203
-,-1.0339240210046867
-,-0.5675665296365903
-,0.27852678952870025
-,1.4073276439451625
-,0.7869895843128375
-,-0.7855934106241675
-,-4.2738603215659206
-,-1.6281863869292028
-,-2.1172134913431884
-,-1.553257042583656
-,0.7931917306037837
-,-0.3883360536824733
-,-1.20662458480856
-,-1.411646571072422
-,-2.748538269723346
-,-0.306405240098778
-,-0.5443680227985697
-,3.727124007397662
-,2.3229432081011447
-,-2.5877496067301466
-,-2.6495738387397854
-,2.4661531627544178
-,2.7366344477273157
-,-7.122769523717112
-,-1.6797444286485832
-,-2.1818730613141515
-,10.562969052551928
-,0.8077291526353853
-,-1.7611591830107407
-,-1.8080645312513999
-,-0.8075125324714407
-,-0.6901231471987226
-,-2.0466241000068317
-,0.45949454011537105
-,2.9702208235239205
-,5.186993359235194
-,0.4108578164035587
-,-0.09293735378536327
-,0.1987450641442681
-,0.07371045240860782
-,0.5158603823086556
-,0.6077418920820362
-,-0.01991050431161052
-,-0.737871338787129
-,-0.5397477215979398
-,-0.07229121125481083
-,0.054700815722415454
-,-0.5465746273470882
-,-0.4522408010222036
-,-0.4455294901807793
-,-0.9000318128651107
-,0.14790519149149978
-,0.031223932474437076
-,0.42371610597329845
-,3.621939726695844
-,9.1633663467646
-,-0.1966218694061248
-,2.5177717717451045
-,-2.035512975965816
-,-0.6124099856389645
-,0.35912097400804777
-,-0.794941117100168
-,-6.13975718977161
-,-1.5659571560599068
-,-4.928474549863185
-,-0.08471295315160872
-,-2.394140740000719
-,0.939241124111889
-,-2.4783904341417373
-,1.352443724467797
-,1.3999900711250064
-,4.573531680372459
-]
-b = 1.613596804509584
+class Regression():
+	def __init__(self):
+		pass
+	def parameter_init(self, dim):
+		self.b = 0
+		self.W = np.zeros((dim, 1))
+	def feature_scaling(self, X, train=False):
+		if train:
+			self.min = np.min(X, axis = 0)
+			self.max = np.max(X, axis = 0)
+		return (X - self.min) / (self.max - self.min)
 
-self_min = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.3, -0.3, -0.3, -0.3, -0.3, -0.3, -0.3, -0.3, -0.3, 0.0, 0.11, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.08, -0.03, -0.03, -0.03, -0.05, -0.07, -0.07, -0.08, -0.08, -0.08, -2.5, -2.5, -2.5, -2.5, -2.5, -2.5, -2.5, -2.5, -2.5, 0.0, 0.0, 3.1, 3.1, 2.3, 2.3, 2.3, 2.3, 2.3, -1.9, -1.9, 4.9, 4.9, 4.9, 4.9, 4.9, 4.6, 4.6, 0.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.2, -1.2, -1.2, -1.2, -1.2, -1.2, -1.2, -1.2, -1.2, -0.2, -0.2, -0.2, -0.2, -0.2, -0.2, -0.2, -0.2, -0.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+	def predict(self, X):
+		return np.dot(X, self.W) + self.b
+	def RMSEloss(self, X ,Y):
+		return np.sqrt(np.mean((Y - self.predict(X))** 2) )
+	def train(self, X, Y, times=20000, lr=1):
+		batch_size = X.shape[0]
+		W_dim = X.shape[1]
+		self.parameter_init(W_dim)
+		X = self.feature_scaling(X, train=True)
+		lr_b = 0
+		lr_W = np.zeros((W_dim, 1))
+		landa = 0
+		for time in range(times):
+			
+			# mse loss
+			grad_b = (-np.sum(Y - self.predict(X)) + -np.sum( landa * self.W**2))/batch_size
+			#print(grad_b)
+	
+			grad_W = (-np.dot(X.T, (Y - self.predict(X))  ))/batch_size
+			
+			# adagrad
+			lr_b += grad_b ** 2
+			lr_W += grad_W ** 2
+			#lr_W += np.dot(grad_W.T, grad_W)			
+
+			#update
+			self.b = self.b - lr/np.sqrt(lr_b) * grad_b
+			self.W = self.W - lr/np.sqrt(lr_W) * grad_W
 
 
-self_max = np.array([42.0, 42.0, 42.0, 42.0, 42.0, 42.0, 42.0, 42.0, 42.0, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.85, 2.85, 2.85, 2.85, 2.85, 2.85, 2.85, 2.85, 2.85, 4.83, 4.83, 4.83, 4.83, 4.83, 4.83, 4.83, 4.83, 4.83, 73.0, 73.0, 73.0, 73.0, 73.0, 73.0, 73.0, 73.0, 73.0, 76.0, 76.0, 76.0, 76.0, 76.0, 76.0, 76.0, 76.0, 76.0, 132.0, 132.0, 132.0, 132.0, 132.0, 132.0, 132.0, 132.0, 132.0, 108.0, 108.0, 108.0, 108.0, 108.0, 108.0, 108.0, 108.0, 108.0, 206.0, 206.0, 206.0, 206.0, 206.0, 193.0, 199.0, 199.0, 199.0, 118.0, 118.0, 118.0, 118.0, 118.0, 118.0, 118.0, 118.0, 118.0, 70.0, 70.0, 70.0, 70.0, 70.0, 70.0, 70.0, 70.0, 70.0, 88.0, 88.0, 88.0, 88.0, 88.0, 88.0, 88.0, 88.0, 88.0, 20.0, 20.0, 20.0, 20.0, 20.0, 20.0, 20.0, 20.0, 20.0, 6.7, 6.7, 6.7, 6.7, 6.7, 6.7, 6.7, 6.7, 6.7, 360.0, 360.0, 360.0, 360.0, 360.0, 360.0, 360.0, 360.0, 360.0, 359.0, 359.0, 359.0, 359.0, 359.0, 359.0, 359.0, 359.0, 359.0, 48.0, 48.0, 48.0, 48.0, 48.0, 48.0, 48.0, 48.0, 48.0, 23.0, 23.0, 23.0, 23.0, 23.0, 23.0, 23.0, 23.0, 23.0])
 
 
-test_data = pd.read_csv(sys.argv[1],header=None)
+
+data = pd.read_csv('train.csv' , encoding = 'big5')
+data.replace('NR','0',inplace = True)
+pure_data = data.iloc[:,3:]
+data_list = []
+
+
+#print(pure_data)
+for i in range(240):
+	temp_data = pure_data.iloc[18*i:18*(i+1),:]
+	temp_data = temp_data.reset_index()
+	del temp_data['index']
+	data_list.append(temp_data)
+
+
+real_data = pd.concat(data_list, axis=1)
+#real_answer = real_data.loc[9,:]
+#print(real_data)	
+#print(real_answer)
+
+
+
+
+
+
+
+train_list = []
+answer_list = []
+for i in range(12):
+	for j in range(471):
+		train_data = real_data.iloc[:,i*240+j:i*240+j+9]
+		#train_data.columns = np.array(range(162))
+		train_data = train_data.values.reshape(1,-1)
+		train_data = pd.DataFrame(data = train_data)
+		#train_data = train_data.reshape(1,-1)
+		#train_data.columns = pd.DataFrame(train_data,columns=162)
+		train_answer = real_data.iloc[9:10,i*240+j+9]
+		#train_answer.columns = ['1']
+		train_list.append(train_data)
+		answer_list.append(train_answer)
+
+
+drop_list = []
+index = 0
+
+'''
+for ele in train_list:
+	if index < 5:
+		print(ele.ix['80'])
+		index += 1
+
+for ele in train_list:
+
+	print(ele[80:89])
+	for ele_PM25 in ele[80:89]:
+		print(ele_PM25)
+		if int(ele_PM25) <= 0 or int(ele_PM25) >= 125:
+			drop_list.append(index)
+			break					
+	index += 1
+
+'''
+data_x = pd.concat(train_list)
+#x = np.array(data_x,float)
+data_y = pd.concat(answer_list)
+#y = np.array(data_y,float)
+
+x = np.array(data_x,float)
+y = np.array(data_y,float)
+#print(x)
+for ele in x:
+	for j in ele[81:90]:
+		if j <= 0 or j >= 135:
+			drop_list.append(index)
+			break		
+	index += 1
+
+index = 0
+for ele in y:
+	if ele <= 0 or ele >= 135:
+		drop_list.append(index)
+	index += 1
+
+#print(drop_list)
+drop_list = list(set(drop_list))
+x = pd.DataFrame(data = x)
+y = pd.DataFrame(data = y)
+x = x.drop(drop_list)
+y = y.drop(drop_list)
+#print(x)
+#print(y)
+x = x.values
+y = y.values
+x = np.array(x,float)
+y = np.array(y,float)
+
+#print(x)
+#print(y)
+# start training
+'''
+learning_rate = 0.1
+
+w = np.zeros(len(x[0]))
+s_grad = np.zeros(len(x[0]))
+recrusive = 10000
+#print('start_train')
+while recrusive:
+	tmp = np.dot(x,w)
+	loss = y - tmp
+	grad = np.dot(x.T,loss)*(-2)
+	s_grad += grad**2
+	ada = np.sqrt(s_grad)
+	w = w - learning_rate * grad / ada
+	recrusive -= 1
+
+#print('end')
+'''
+
+
+'''
+batch_size = x.shape[0]
+W_dim = x.shape[1]
+self_b = 0
+self_W = np.zeros((W_dim,1))
+lr = 0.1
+lr_b = 0
+lr_W = np.zeros((W_dim, 1))
+
+print(batch_size, W_dim)
+
+for epoch in range(10000):
+	# mse loss
+	grad_b = -np.sum(y - np.dot(x,self_W) - self_b)/ batch_size
+	grad_W = -np.dot(x.T, (y - np.dot(x,self_W) - self_b )) / batch_size
+	# adagrad
+	print(grad_W)
+	lr_b += grad_b ** 2
+	lr_W = lr_W + (grad_W ** 2)
+	print(lr_W)
+	#update
+	
+	self_b = self_b - lr / np.sqrt(lr_b) * grad_b
+	self_W = self_W - lr / np.sqrt(lr_W) * grad_W
+'''
+
+A = Regression()
+A.train(x,y) 
+w = A.W
+
+test_data = pd.read_csv('test.csv',header=None)
 test_data = test_data.iloc[:,2:]
 test_data.replace('NR','0',inplace = True)
 
+#print(test_data)
 
 test_list = []
 
@@ -191,25 +214,55 @@ for i in range(260):
 
 test_x = pd.concat(test_list, axis = 0)
 test_x = np.array(test_x,float)
+#print(test_x)
+#print(test_x.shape[0], test_x.shape[1])
 index = 0
+#drop_list = []
 
 for ele in test_x:
+	#ele_index = 1
 	for i in range(18):
 		ele_index = 9*i+1
 		for j in ele[9*i+1:9*(i+1)]:
 			if j <= 0 :
+				#print(index)
 				ele[ele_index] = ele[ele_index-1]
 			ele_index += 1
 	index += 1
 
-test_x = (test_x - self_min) / (self_max - self_min)
-y_guess = np.dot(test_x, W) + b
 
-#print(y_guess)
+
+#B = Regression()
+test_x = A.feature_scaling(test_x)
+y_guess = A.predict(test_x)
+'''
+print('[')
+for i in A.W:
+	print(',' + str(i[0]))
+
+print(']')
+
+print('----------')
+
+print(A.b)
+
+'''
+
+'''
+print(list(A.min))
+
+print('-------------')
+
+print(list(A.max))
+'''
+
 
 k = 0
 print('id,value')
 for i in y_guess:
-	print('id_'+str(k) + ',' + str(i) )
+	#print(i)
+	print('id_'+str(k) + ',' + str(i[0]) )
 	k += 1
+
+
 
