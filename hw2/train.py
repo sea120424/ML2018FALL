@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import sys
 
 def find_model(data):
     mean = np.mean(data, axis = 0)
@@ -31,7 +32,7 @@ def deal(A):
     A = A.diagonal()
     A = np.transpose([A])
     return A
-
+'''
 def dumping(zero_mean, one_mean, zero_det, one_det):
     print("zero_mean = ")
     print(zero_mean.tolist())
@@ -42,7 +43,7 @@ def dumping(zero_mean, one_mean, zero_det, one_det):
     print("one_det = ")
     print(one_det.tolist())
     print("\n")
-
+'''
 
 data_x = pd.read_csv(sys.argv[1])
 data_y = pd.read_csv(sys.argv[2])
@@ -81,7 +82,7 @@ data_zero = data_all[zero_list,:]
 mean_one, det_one = find_model(data_one)
 mean_zero , det_zero = find_model(data_zero)
 
-dumping(mean_zero, mean_one, det_zero, det_one)
+#dumping(mean_zero, mean_one, det_zero, det_one)
 
 '''
 fun_one = Gaussian(mean_one, det_one, data_varify)
@@ -95,7 +96,7 @@ fun_zero = deal(fun_zero)
 prop = fun_one * count_one / (fun_one * count_one + fun_zero * count_zero + 1e-99)
 
 #print(prop)
-prop -= 0.4
+prop -= 0.2
 prop = np.around(prop) 
 
 #print(prop)
@@ -108,7 +109,7 @@ for i in range(2500):
 
 print((2500 - error)/2500)
 '''
-'''
+
 test_data = np.array(test_data,float)
 test_fun_one = Gaussian(mean_one, det_one, test_data)
 test_fun_zero = Gaussian(mean_zero, det_zero, test_data)
@@ -128,7 +129,7 @@ for i in prop_test:
     print('id_' + str(k) + ',' + str(int(i[0])))
     k += 1
 
-'''
+
 #print( det_one)
 
     
